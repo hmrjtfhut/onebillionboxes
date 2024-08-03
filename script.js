@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Load initial checkboxes
-  loadCheckboxes(0, 1000);
+  loadCheckboxes(0, 100000);
 
   // Handle scrolling to load more checkboxes
   container.addEventListener('scroll', () => {

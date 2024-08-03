@@ -18,6 +18,11 @@ input[type="checkbox"] {
   height: 20px;
   margin: 5px;
   border: 1px solid #ddd;
+  appearance: none;
+}
+
+input[type="checkbox"]:checked {
+  background-color: var(--team-color, #ddd);
 }
 
 .team-input {

@@ -25,13 +25,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
       checkbox.id = `checkbox-${i}`;
-
+      
       // Get checkbox state from Firebase
-      database.ref(`checkboxes/${i}`).once('value').then(snapshot => {
-        const isChecked = snapshot.val();
-        checkbox.checked = isChecked;
-        checkbox.style.backgroundColor = teamColor;
-      });
+      database.ref(`checkboxes/${i}`).once('value')
+        .then(snapshot => {
+          const isChecked = snapshot.val();
+          checkbox.checked = isChecked;
+          checkbox.style.backgroundColor = teamColor;
+          console.log(`Loaded checkbox ${i}: checked=${isChecked}`);
+        })
+        .catch(error => {
+          console.error(`Error loading checkbox ${i}:`, error);
+        });
 
       checkbox.addEventListener('change', handleCheckboxChange);
       container.appendChild(checkbox);
@@ -56,10 +61,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const isChecked = event.target.checked;
 
     // Update checkbox state in Firebase
-    database.ref(`checkboxes/${checkboxId}`).set(isChecked);
-
-    // Update the background color
-    event.target.style.backgroundColor = teamColor;
+    database.ref(`checkboxes/${checkboxId}`).set(isChecked)
+      .then(() => {
+        console.log(`Updated checkbox ${checkboxId} to ${isChecked}`);
+        event.target.style.backgroundColor = teamColor;
+      })
+      .catch(error => {
+        console.error(`Error updating checkbox ${checkboxId}:`, error);
+      });
   }
 
   // Load initial checkboxes
@@ -76,9 +85,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Team creation and joining
   document.getElementById('create-team').addEventListener('click', () => {
     teamColor = document.getElementById('team-color').value;
-    database.ref('team-color').set(teamColor);
-    console.log(`Created/Joined team with color: ${teamColor}`);
-    updateTeamColors(teamColor);
+    database.ref('team-color').set(teamColor)
+      .then(() => {
+        console.log(`Created/Joined team with color: ${teamColor}`);
+        updateTeamColors(teamColor);
+      })
+      .catch(error => {
+        console.error('Error setting team color:', error);
+      });
   });
 
   // Update checkbox colors based on team color
